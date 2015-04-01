@@ -3,6 +3,10 @@
  * attendance record if one is not found
  * within localStorage.
  */
+
+/**
+ * Student attendance MODEL
+ */
 (function() {
     if (!localStorage.attendance) {
         console.log('Creating attendance records...');
