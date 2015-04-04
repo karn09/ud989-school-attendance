@@ -19,16 +19,16 @@ input {
 }
 
 /* Column types */
-th.missed-col {
+th#missed-col {
     background-color: #f00;
 }
 
-td.missed-col {
+td#missed-col {
     background-color: #ffecec;
     color: #f00;
     text-align: center;
 }
 
-.name-col {
+#name-col {
     text-align: left;
 }

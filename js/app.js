@@ -11,31 +11,78 @@ var model = {
   init: function(){
     if (!localStorage.attendance) {
       console.log('Creating attendance records...');
-      localStorage.attendance = JSON.stringify(addRecords());
+      localStorage.attendance = JSON.stringify(model.addRecords());
     } else {
-      getRecords();
+      console.log('Records already available.')
     }
   },
   addRecords: function(){
     var attendance = {};
     this.students.forEach(function (name) {
       attendance[name] = [];
-      for (var i = 0; i < 11; i++) {
+      for (var i = 0; i < model.days; i++) {
         attendance[name].push(model.getRandom())
       }
     })
     return attendance;
   },
-  getRecords: function(){
-    return localStorage.attedance;
-  },
   getRandom: function() {
     return (Math.random() >= 0.5);
   },
-  students: ['Slappy the Frog', 'Lilly the Lizard', 'Paulrus the Walrus	', 'Gregory the Goat', 'Adam the Anaconda']
-  
+  students: ['Slappy the Frog', 'Lilly the Lizard', 'Paulrus the Walrus', 'Gregory the Goat', 'Adam the Anaconda'],
+  days: 12,
+  attendance: JSON.parse(localStorage.attendance),
+};
+
+var control = {
+  init: function() {
+    model.init();
+    view.init();
+  },
+  getStudents: function() {
+    return model.students;
+  },
+  getDays: function() {
+    return model.days;
+  },
+  setDays: function(num) {
+    model.days = num;
+  },
+  getRecords: function(){
+    return model.attendance;
+  },
+  setRecord: function(name, bool, day) {
+    model.attendance[name][day] = bool;
+  },
 }
-console.log(model.addRecords())
+var view = {
+  init: function() {
+    this.nameColElement = document.getElementsByClassName('name-col')
+
+    this.render();
+  }, 
+  render: function() {
+    this.renderHeaderRow();
+
+  },
+  renderHeaderRow: function() {
+    var missedColElement = document.getElementById('missed-col')
+    var parentNode = missedColElement.parentNode;
+    
+    for (var i = 1; i <= model.days; i++) {
+      var day = document.createElement('th');
+      var th = parentNode.insertBefore(day, missedColElement);
+      th.innerHTML = i
+    }    
+  },
+  renderColumns: function() {
+    var students = document.getElementById('students');
+
+  }
+}
+control.init();
+
+//console.log(model.addRecords())
 // (function() {
 //     if (!localStorage.attendance) {
 //         console.log('Creating attendance records...');
