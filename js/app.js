@@ -1,11 +1,12 @@
-/* STUDENTS IGNORE THIS FUNCTION
- * All this does is create an initial
- * attendance record if one is not found
- * within localStorage.
- */
-
 /**
- * Student attendance MODEL
+ * Model:
+ *  init: create localStorage attendance record if unavailable, otherwise do nothing.
+ *  addRecords: create attendance object loaded with student names, and random attendance records
+ *  getRandom: random True / False record
+ *  students: track names of students in an Array
+ *  days: constant to track days of student attendance
+ *  attendance: object holding parsed localStorage data
+ *  saveRecords: parse attendance object into localStorage
  */
 var model = {
   init: function(){
@@ -37,6 +38,16 @@ var model = {
   }
 };
 
+/** 
+ *  Control: routing logic to connect view and model,
+ *    init: initialize model and view
+ *    getStudents: return students from model
+ *    getDays: return number of days within model
+ *    setDays: set number of days within attendance model (unused)
+ *    getRecords: return attendance object from within model
+ *    countDaysMissing: loop through attendance model, starting at name supplied, search for missing days
+ *    handleClickEvents: attach click event to each 'checkbox', update attendance model
+ */  
 var control = {
   init: function() {
     model.init();
@@ -77,11 +88,18 @@ var control = {
     })
   }
 }
+/**
+ *  view: handle overall rendering of attendance table
+ *    init: call render()
+ *    render: call rendering functions for headers, columns, missing days
+ *    renderHeaderRow: render header row, inserting all days before missed column element
+ *    renderColumns: start with current student, render each column matching with header row
+ *    renderMissingDays: find missing-column, match with student name record and render days missed. 
+ */
 
 var view = {
   init: function() {
-    this.nameColElement = document.getElementsByClassName('name-col')
-
+    //this.nameColElement = document.getElementsByClassName('name-col')
     this.render();
   }, 
   render: function() {
@@ -136,6 +154,10 @@ var view = {
   }
   
 }
+
+/**
+ * initialize application
+ */
 control.init();
 
 //console.log(model.addRecords())
