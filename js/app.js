@@ -32,6 +32,9 @@ var model = {
   students: ['Slappy the Frog', 'Lilly the Lizard', 'Paulrus the Walrus', 'Gregory the Goat', 'Adam the Anaconda'],
   days: 12,
   attendance: JSON.parse(localStorage.attendance),
+  saveRecords: function() {
+    localStorage.attendance = JSON.stringify(model.attendance);
+  }
 };
 
 var control = {
@@ -53,8 +56,28 @@ var control = {
   },
   setRecord: function(name, bool, day) {
     model.attendance[name][day] = bool;
+    model.saveRecords();
+    view.renderMissingDays();
   },
+  countDaysMissing: function(name) {
+    var records = this.getRecords();
+    var days = this.getDays();
+    var count = 0;
+    
+    for (var i = 0; i < days; i++) {
+      if (records[name][i] === false) {
+        count++;
+      }
+    }
+    return count;
+  },
+  handleClickEvent: function(element, name, day) {
+    element.addEventListener('click', function() {
+      control.setRecord(name, this.checked, day);
+    })
+  }
 }
+
 var view = {
   init: function() {
     this.nameColElement = document.getElementsByClassName('name-col')
@@ -63,7 +86,8 @@ var view = {
   }, 
   render: function() {
     this.renderHeaderRow();
-
+    this.renderColumns();
+    this.renderMissingDays();
   },
   renderHeaderRow: function() {
     var missedColElement = document.getElementById('missed-col')
@@ -76,9 +100,41 @@ var view = {
     }    
   },
   renderColumns: function() {
-    var students = document.getElementById('students');
-
+    var records = control.getRecords();
+    var students = control.getStudents();
+    
+    var studentsElement = document.getElementById('students');
+    
+    for (var j = 0; j < students.length; j++) {
+      var table = document.createElement('tr')
+      studentsElement.appendChild(table);
+      var name = document.createElement('td');
+      name.innerHTML = students[j];
+      table.appendChild(name)
+      for (var i = 0; i < model.days; i++) {
+        var attend = document.createElement('td');
+        var input = document.createElement('input')
+        input.type = 'checkbox';
+        input.checked = records[students[j]][i];
+        control.handleClickEvent(input, students[j], i);
+        attend = table.appendChild(attend);
+        attend.appendChild(input);
+        
+      }
+      var missingCol = document.createElement('td');
+      missingCol.className = 'missed-col';
+      table.appendChild(missingCol)
+    }
+  },
+  renderMissingDays: function(){
+    var missingDayElem = document.getElementsByClassName('missed-col');
+    var students = control.getStudents();
+    
+    for (var i = 0; i < students.length; i++) {
+      missingDayElem[i].innerHTML = control.countDaysMissing(students[i]);    
+    }
   }
+  
 }
 control.init();
 
